@@ -164,6 +164,15 @@ int main(int argc, char** argv)
                 Vec3d rot_vec_double_inv_inv(DEGREE(rot_vec_double_inv_inv_rad[0]), DEGREE(rot_vec_double_inv_inv_rad[1]), DEGREE(rot_vec_double_inv_inv_rad[2]));
                 Vec3d rot_vec_double_tran_tran_rad = rot2euler_double(rot_mat_double_tran_tran);
                 Vec3d rot_vec_double_tran_tran(DEGREE(rot_vec_double_tran_tran_rad[0]), DEGREE(rot_vec_double_tran_tran_rad[1]), DEGREE(rot_vec_double_tran_tran_rad[2]));
+
+                Mat rot_mat_rodrig, rot_mat_rodrig_inv;
+                Mat rot_vec_mat_inv;
+                Rodrigues(rot_vec, rot_mat_rodrig);
+                rot_mat_rodrig_inv = rot_mat_rodrig.t();
+                Rodrigues(rot_mat_rodrig_inv, rot_vec_mat_inv);
+                double* rot_vec_mat_inv_data = (double*)rot_vec_mat_inv.data;
+                Vec3d rot_vec_inv_rodrig(rot_vec_mat_inv_data[0], rot_vec_mat_inv_data[1], rot_vec_mat_inv_data[2]);
+                Vec3d rot_vec_inv_rodrig_deg(DEGREE(rot_vec_inv_rodrig[0]), DEGREE(rot_vec_inv_rodrig[1]), DEGREE(rot_vec_inv_rodrig[2]));
                 
                 Vec3d diff1 = rot_vec_deg - rot_vec_2;
                 Vec3d diff2 = rot_vec_deg - rot_vec_2_double;
@@ -173,6 +182,7 @@ int main(int argc, char** argv)
                 Vec3d diff6 = rot_vec_deg + rot_vec_double_tran;
                 Vec3d diff7 = rot_vec_deg - rot_vec_double_inv_inv;
                 Vec3d diff8 = rot_vec_deg - rot_vec_double_tran_tran;
+                Vec3d diff9 = rot_vec_deg + rot_vec_inv_rodrig_deg;
 
                 double diff1_norm = sqrt(diff1[0]*diff1[0] + diff1[1]*diff1[1] + diff1[2]*diff1[2]);
                 double diff2_norm = sqrt(diff2[0]*diff2[0] + diff2[1]*diff2[1] + diff2[2]*diff2[2]);
@@ -182,6 +192,7 @@ int main(int argc, char** argv)
                 double diff6_norm = sqrt(diff6[0]*diff6[0] + diff6[1]*diff6[1] + diff6[2]*diff6[2]);
                 double diff7_norm = sqrt(diff7[0]*diff7[0] + diff7[1]*diff7[1] + diff7[2]*diff7[2]);
                 double diff8_norm = sqrt(diff8[0]*diff8[0] + diff8[1]*diff8[1] + diff8[2]*diff8[2]);
+                double diff9_norm = sqrt(diff9[0]*diff9[0] + diff9[1]*diff9[1] + diff9[2]*diff9[2]);
 
                 out << rot_vec_deg[0] << ',' << rot_vec_deg[1] << ',' << rot_vec_deg[2] << ','
                     << rot_vec[0] << ',' << rot_vec[1] << ',' << rot_vec[2] << ','
@@ -195,7 +206,8 @@ int main(int argc, char** argv)
                     << rot_vec_double_tran[0] << ',' << rot_vec_double_tran[1] << ',' << rot_vec_double_tran[2] << ','
                     << rot_vec_double_inv_inv[0] << ',' << rot_vec_double_inv_inv[1] << ',' << rot_vec_double_inv_inv[2] << ','
                     << rot_vec_double_tran_tran[0] << ',' << rot_vec_double_tran_tran[1] << ',' << rot_vec_double_tran_tran[2] << ','
-                    << diff1_norm << ',' << diff2_norm << ',' << diff3_norm << ',' << diff4_norm << ',' << diff5_norm << ',' << diff6_norm << ',' << diff7_norm << ',' << diff8_norm
+                    << rot_vec_inv_rodrig_deg[0] << ',' << rot_vec_inv_rodrig_deg[1] << ',' << rot_vec_inv_rodrig_deg[2] << ','
+                    << diff1_norm << ',' << diff2_norm << ',' << diff3_norm << ',' << diff4_norm << ',' << diff5_norm << ',' << diff6_norm << ',' << diff7_norm << ',' << diff8_norm << ',' << diff9_norm
                     << endl;
             }
         }
